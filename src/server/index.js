@@ -6,6 +6,12 @@ const dotenv = require('dotenv').load();
 const PORT = 9000;
 const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
 
+function writeRes(statusCode, message, res) {
+  res.writeHead(statusCode, headers);
+  res.write(JSON.stringify(message, true, 2));
+  return re;
+}
+
 function reqWeather(req, res) {
   console.log('Requesting Weather info');
   if (req.method !== 'GET') {
@@ -26,11 +32,12 @@ function reqWeather(req, res) {
 
     let error;
     if (statusCode !== 200) {
-      wres.writeHead(statusCode, headers);
-      wres.write(JSON.stringify({
-        message: `Error retrieving weather data`,
-      }, true, 2));
-      wres.end();
+      const retRes = writeRes(
+        statusCode,
+        { message: `Error retrieving Data`},
+        headers
+      );
+      retRes.end();
     }
 
     wres.setEncoding('utf8');
@@ -45,19 +52,21 @@ function reqWeather(req, res) {
         res.write(JSON.stringify(parsedData, true, 2));
         res.end();
       } catch (e) {
-        wres.writeHead(statusCode, headers);
-        wres.write(JSON.stringify({
-          message: `Error retrieving weather data`,
-        }, true, 2));
-        wres.end();
+        const retRes = writeRes(
+          statusCode,
+          { message: `Error retrieving weather data`},
+          headers
+        );
+        retRes.end();
       }
     });
   }).on('error', (e) => {
-      res.writeHead(500, headers);
-      res.write(JSON.stringify({
-        message: `Error retrieving weather data`,
-      }, true, 2));
-      res.end();
+      const retRes = writeRes(
+        500,
+        { message: `Error connecting to weather API`},
+        headers
+      );
+      retRes.end();
   });
 }
 

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { scaleLinear } from 'd3-scale';
 import './App.css';
 
+const apiHost = 'http://localhost:9000';
+
 const toCentigrades = t => (t - 32) * 5/9
 
 const scale = scaleLinear()
@@ -29,10 +31,7 @@ function displayDay(time, i) {
 }
 
 function getBkgStyle(forecastData = []) {
-  // Make sure we only compute given the number of days
-  const range = forecastData;
-// background: linear-gradient(to bottom, #1e5799 0%,#2989d8 30%,#2989d8 30%,#207cca 69%,#207cca 69%,#7db9e8 100%);
-  const colorStops = range.map((day, i, self) => {
+  const colorStops = forecastData.map((day, i, self) => {
     const percentage = i * 100 / self.length;
     const color = encodeColorByTemp(day);
     return `${color} ${percentage}0%`;
@@ -51,7 +50,7 @@ function getPosition() {
 }
 
 function getWeather({ latitude, longitude }) {
-  return fetch(`http://localhost:9000/weather?lat=${latitude}&lon=${longitude}`)
+  return fetch(`${apiHost}/weather?lat=${latitude}&lon=${longitude}`)
     .then(res => res.json());
 }
 
@@ -70,11 +69,10 @@ function displayTemp(temperature) {
 }
 
 class App extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.state = {
-      wData: 'Load',
+      wData: {},
       forecast: [],
       loading: true,
     };
