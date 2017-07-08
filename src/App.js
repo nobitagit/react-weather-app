@@ -57,7 +57,7 @@ function getWeather({ latitude, longitude }) {
 function getData() {
   // You can uncomment this line if you want to avoid
   // slashing the weather API while in dev
-  //return Promise.resolve(retRes);
+//  return Promise.resolve(retRes);
 
   return getPosition()
     .then(getWeather);
@@ -106,7 +106,13 @@ class App extends Component {
         <div className="App-intro">
           {
             this.state.forecast.map((day, i) =>
-              (<p className="Axis-day">{displayDay(day.time, i)}</p>)
+              (<p className="Axis-day">
+                <span className="Axis-day--temp">
+                {displayTemp(day.temperatureMin + day.temperatureMax / 2)}
+                </span>
+                <br />
+                {displayDay(day.time, i)}
+              </p>)
             )
           }
         </div>
