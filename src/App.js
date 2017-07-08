@@ -106,7 +106,7 @@ class App extends Component {
         <div className="App-intro">
           {
             this.state.forecast.map((day, i) =>
-              (<p className="Axis-day">
+              (<p key={i.toString()} className="Axis-day">
                 <span className="Axis-day--temp">
                 {displayTemp(day.temperatureMin + day.temperatureMax / 2)}
                 </span>
